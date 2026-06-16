@@ -13,13 +13,19 @@
       "backgroundColor": "#1A6D82"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "To send photos and videos in the class diary",
+        "NSMicrophoneUsageDescription": "To record voice notes for parents",
+        "NSCameraUsageDescription": "To take photos and videos for the class diary"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#1A6D82"
-      }
+      },
+      "package": "com.magnetpro.teacher"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +37,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2c8e625c-8901-40c7-a2c7-39927381118f"
+      }
+    },
+    "owner": "adila-2005"
   }
 }

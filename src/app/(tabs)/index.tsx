@@ -1,12 +1,20 @@
+import { theme } from '@/constants/theme';
+
+import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Animated,
+  Animated,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialIcons } from '@expo/vector-icons';
-import { theme } from '@/constants/theme';
-import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
@@ -39,6 +47,16 @@ function FadeSlide({ children, delay = 0, style }: { children: React.ReactNode; 
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const [teacherName, setTeacherName] = React.useState('Teacher');
+
+  React.useEffect(() => {
+    AsyncStorage.getItem('magnetpro_user').then((raw) => {
+      if (raw) {
+        const user = JSON.parse(raw);
+        setTeacherName(user?.name || user?.username || 'Teacher');
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -53,10 +71,16 @@ export default function DashboardScreen() {
           <View style={styles.headerRow}>
             <View>
               <Text style={styles.greeting}>Welcome back 👋</Text>
-              <Text style={styles.teacherName}>Class 1A Teacher</Text>
+              <Text style={styles.teacherName}>{teacherName}</Text>
               <Text style={styles.subtext}>36 students enrolled</Text>
             </View>
-            <TouchableOpacity style={styles.logoutBtn}>
+            <TouchableOpacity
+              style={styles.logoutBtn}
+              onPress={async () => {
+                await AsyncStorage.removeItem('magnetpro_user');
+                router.replace('/login');
+              }}
+            >
               <MaterialIcons name="logout" size={18} color="#fff" />
               <Text style={styles.logoutText}>Sign out</Text>
             </TouchableOpacity>
@@ -92,6 +116,7 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Quick Actions */}
+        {/* Quick Actions */}
         <FadeSlide delay={200}>
           <Text style={styles.sectionTitle}>QUICK ACCESS</Text>
           <View style={styles.actionRow}>
@@ -113,6 +138,42 @@ export default function DashboardScreen() {
               <MaterialIcons name="chevron-right" size={20} color={theme.colors.primary} style={styles.arrow} />
             </TouchableOpacity>
           </View>
+
+          {/* Progress Cards Card — full-width */}
+          <TouchableOpacity
+            style={styles.progressCard}
+            onPress={() => router.push('/teacherprogresscardscreen')}
+            activeOpacity={0.85}
+          >
+            <View style={[styles.iconBox, { backgroundColor: '#1A6D8220' }]}>
+              <MaterialIcons name="assessment" size={28} color="#1A6D82" />
+            </View>
+            <View style={styles.diaryTextWrap}>
+              <Text style={styles.actionTitle}>Progress Cards</Text>
+              <Text style={styles.actionSub}>Select students &amp; send progress reports to parents</Text>
+            </View>
+            <View style={[styles.diaryBadge, { backgroundColor: '#1A6D82' }]}>
+              <Text style={styles.diaryBadgeText}>SEND</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Diary Card — full-width */}
+          <TouchableOpacity
+            style={styles.diaryCard}
+            onPress={() => router.push('/teacherdiaryscreen')}
+            activeOpacity={0.85}
+          >
+            <View style={[styles.iconBox, { backgroundColor: '#C97A3A20' }]}>
+              <MaterialIcons name="menu-book" size={28} color="#C97A3A" />
+            </View>
+            <View style={styles.diaryTextWrap}>
+              <Text style={styles.actionTitle}>Class Diary</Text>
+              <Text style={styles.actionSub}>Send messages, photos, audio &amp; files to parents</Text>
+            </View>
+            <View style={styles.diaryBadge}>
+              <Text style={styles.diaryBadgeText}>SEND</Text>
+            </View>
+          </TouchableOpacity>
         </FadeSlide>
 
         {/* Students to Review */}
@@ -145,7 +206,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
   header: {
     paddingHorizontal: 24,
-    paddingBottom: 80,
+    paddingBottom: 10,
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
   },
@@ -210,6 +271,42 @@ const styles = StyleSheet.create({
   },
   actionTitle: { fontSize: 15, fontWeight: '700', color: theme.colors.text, marginBottom: 4 },
   actionSub: { fontSize: 12, color: theme.colors.textSecondary },
+  diaryCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 18,
+    marginTop: 14,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    gap: 14,
+  },
+   progressCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 18,
+    marginTop: 14,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    gap: 14,
+  },
+  diaryTextWrap: { flex: 1 },
+  diaryBadge: {
+    backgroundColor: '#C97A3A',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  diaryBadgeText: { fontSize: 9, fontWeight: '800', color: '#fff', letterSpacing: 1 },
   arrow: { position: 'absolute', bottom: 16, right: 16 },
   reviewCard: {
     flexDirection: 'row',
