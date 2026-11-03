@@ -137,7 +137,7 @@ export async function fetchContacts(): Promise<Contact[]> {
 // ─── 2. Chat History ──────────────────────────────────────────────────────────
 
 /**
- * GET /api/chat/history/?role=teacher
+ * GET /api/chat/history/<room_id>/?role=teacher
  * Authorization: Bearer <token>
  *
  * Returns previous diary messages sent by this teacher.
@@ -145,9 +145,11 @@ export async function fetchContacts(): Promise<Contact[]> {
  */
 export async function fetchChatHistory(roomId?: number): Promise<ChatMessage[]> {
   const params = new URLSearchParams({ role: 'teacher' });
-  if (roomId !== undefined) params.set('room_id', String(roomId));
+  const path = roomId !== undefined
+    ? `/chat/history/${encodeURIComponent(String(roomId))}/`
+    : '/chat/history/';
 
-  const res = await fetch(`${BASE_URL}/chat/history/?${params.toString()}`, {
+  const res = await fetch(`${BASE_URL}${path}?${params.toString()}`, {
     method:  'GET',
     headers: await authHeaders(),
   });

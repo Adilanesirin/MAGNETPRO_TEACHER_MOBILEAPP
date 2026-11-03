@@ -1,11 +1,16 @@
+import ForceUpdateModal from '@/components/ForceUpdateModal';
+import { theme } from '@/constants/theme';
+import { useVersionCheck } from '@/hooks/useVersionCheck';
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
@@ -16,12 +21,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { theme } from '../constants/theme';
 
 const STORAGE_KEY = 'magnetpro_institution_id';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { updateAvailable, message, openStore } = useVersionCheck();
+  const [dismissedUpdate, setDismissedUpdate] = useState(false);
   const [institutionId, setInstitutionId] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -100,10 +106,14 @@ export default function LoginScreen() {
         >
           {/* Brand header */}
           <View style={styles.header}>
-            <View style={styles.iconRing}>
-              <MaterialIcons name="school" size={36} color="#fff" />
-            </View>
-            <Text style={styles.appName}>MagnetPro</Text>
+           <View style={styles.iconRing}>
+            <Image
+              source={require('../../assets/images/logo-only.png')}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
+          </View>
+            <Text style={styles.appName}>MagnetPRO</Text>
             <Text style={styles.tagline}>Teacher Portal</Text>
           </View>
 
@@ -120,7 +130,7 @@ export default function LoginScreen() {
                 <TextInput
                   value={institutionId}
                   onChangeText={setInstitutionId}
-                  placeholder="e.g. GW9Q6NQ05ONRU"
+                  placeholder="e.g. GWxxxxxxxxxxU"
                   placeholderTextColor="rgba(255,255,255,0.4)"
                   style={styles.input}
                   autoCapitalize="characters"
@@ -150,7 +160,7 @@ export default function LoginScreen() {
                 <TextInput
                   value={username}
                   onChangeText={setUsername}
-                  placeholder="teacher"
+                  placeholder="Teacher"
                   placeholderTextColor="rgba(255,255,255,0.4)"
                   style={styles.input}
                   autoCapitalize="none"
@@ -185,13 +195,6 @@ export default function LoginScreen() {
               </View>
             </View>
 
-            {/* Forgot password */}
-            <TouchableOpacity
-              style={styles.forgot}
-              onPress={() => Alert.alert('Forgot Password', 'Please contact your administrator to reset your password.')}
-            >
-              <Text style={styles.forgotText}>Forgot password?</Text>
-            </TouchableOpacity>
 
             {/* Sign In button */}
             <TouchableOpacity
@@ -218,9 +221,15 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.footer}>© MagnetPro · Secure Teacher Access</Text>
+          <Text style={styles.footer}>© Powered by IMCBS · V{Constants.expoConfig?.version}</Text>
         </ScrollView>
       </KeyboardAvoidingView>
+       <ForceUpdateModal
+        visible={updateAvailable && !dismissedUpdate}
+        message={message}
+        onUpdate={openStore}
+        onLater={() => setDismissedUpdate(true)}
+      />
     </ImageBackground>
   );
 }
@@ -237,22 +246,32 @@ const styles = StyleSheet.create({
 
   // Header
   header: { alignItems: 'center', marginBottom: 32 },
-  iconRing: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.4)',
+ iconRing: {
+    width: 70,
+    height: 70,
+    borderRadius: 40,
+    backgroundColor: '#fefefeee',
+    borderWidth: 3,
+    borderColor: '#17b7c6',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
+    //shadowColor: '#25b9e6',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 14,
+    elevation: 10,
+  },
+  logoImage: {
+    width: 69,
+    height: 69,
+    borderRadius: 28,
   },
   appName: {
-    color: '#fff',
+    color: '#62e1f8',
     fontSize: 30,
-    fontWeight: '800',
-    letterSpacing: 0.5,
+    fontWeight: '900',
+    letterSpacing: 0.7,
   },
   tagline: {
     color: 'rgba(255,255,255,0.75)',

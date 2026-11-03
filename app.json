@@ -1,28 +1,27 @@
 {
   "expo": {
-    "name": "MagnetPro Teacher",
+    "name": "Edu-Magnet",
     "slug": "magnetpro-teacher",
-    "version": "1.0.0",
+    "version": "2.2.6",
     "orientation": "portrait",
     "scheme": "magnetproteacher",
     "userInterfaceStyle": "light",
-    "icon": "./assets/images/icon.png",
-    "splash": {
-      "image": "./assets/images/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#1A6D82"
-    },
+    "icon": "./assets/images/logo-only.png",
     "ios": {
+       "buildNumber": "1.1.0",
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "To send photos and videos in the class diary",
         "NSMicrophoneUsageDescription": "To record voice notes for parents",
-        "NSCameraUsageDescription": "To take photos and videos for the class diary"
-      }
+        "NSCameraUsageDescription": "To take photos and videos for the class diary",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bundleIdentifier": "com.magnetpro.teacher"
     },
     "android": {
+      "versionCode": 26,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
+        "foregroundImage": "./assets/images/logo-only.png",
         "backgroundColor": "#1A6D82"
       },
       "package": "com.magnetpro.teacher"

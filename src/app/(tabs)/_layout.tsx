@@ -12,13 +12,13 @@ function CustomTabBar() {
   const currentRoute = segments[segments.length - 1];
 
   const tabs = [
-    { name: 'index',      label: 'Dashboard', icon: 'dashboard' },
-    { name: 'students',   label: 'Students',  icon: 'people' },
-    { name: 'attendance', label: 'Attendance', icon: 'event-available' },
+    { name: 'index', label: 'Dashboard', icon: 'dashboard', href: '/' as const },
+    { name: 'students', label: 'Students', icon: 'people', href: '/students' as const },
+    { name: 'attendance', label: 'Attendance', icon: 'event-available', href: '/attendance' as const },
   ];
 
-  // Hide on diary screen
-  if (currentRoute === 'teacherdiaryscreen') return null;
+  // Hide on full-screen chat-style screens.
+  if (currentRoute === 'teacherdiaryscreen' || currentRoute === 'personalchat') return null;
 
   return (
     // ✅ FIX: removed position:'absolute' — tab bar now sits in normal flow
@@ -37,7 +37,7 @@ function CustomTabBar() {
             <TouchableOpacity
               key={tab.name}
               style={styles.tabItem}
-              onPress={() => router.push(tab.name === 'index' ? '/' : `/${tab.name}`)}
+              onPress={() => router.push(tab.href)}
               activeOpacity={0.7}
             >
               <MaterialIcons
